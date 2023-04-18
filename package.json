@@ -22,10 +22,14 @@
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
-      {
-        "command": "export-helper.helloWorld",
-        "title": "Hello World"
-      }
+        {
+            "command": "exportVariable",
+            "title": "Export variable"
+        },
+        {
+            "command": "exportDefaultVariable",
+            "title": "Export default variable"
+        }
     ]
   },
   "license": "MIT",

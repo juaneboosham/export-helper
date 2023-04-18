@@ -52,7 +52,8 @@ const disposableHoverProvider1 = vscode.languages.registerHoverProvider({ langua
 const disposableHoverProvider2 = vscode.languages.registerHoverProvider({ language: 'javascript', scheme: 'file' }, hoverProvider);
 const disposableCodeActionsProvider1 = vscode.languages.registerCodeActionsProvider({ language: 'javascript', scheme: 'file' }, exportActionProvider);
 const disposableCodeActionsProvider2 = vscode.languages.registerCodeActionsProvider({ language: 'typescript', scheme: 'file' }, exportActionProvider);
-const disposableExportVariable = vscode.commands.registerCommand('exportVariable', (variableName) => {
+
+function exportVariable(variableName: string) {
 	const editor = vscode.window.activeTextEditor;
 	if (!editor) {
 		vscode.window.showErrorMessage('No active text editor found');
@@ -66,9 +67,9 @@ const disposableExportVariable = vscode.commands.registerCommand('exportVariable
 		vscode.workspace.applyEdit(edit).then(() => {
 		});
 	}
-});
+}
 
-const disposableExportDefaultVariable = vscode.commands.registerCommand('exportDefaultVariable', (variableName) => {
+function exportDefaultVariable(variableName: string) {
 	const editor = vscode.window.activeTextEditor;
 	if (!editor) {
 		vscode.window.showErrorMessage('No active text editor found');
@@ -82,7 +83,11 @@ const disposableExportDefaultVariable = vscode.commands.registerCommand('exportD
 		vscode.workspace.applyEdit(edit).then(() => {
 		});
 	}
-});
+};
+
+const disposableExportVariable = vscode.commands.registerCommand('exportVariable', exportVariable);
+const disposableExportDefaultVariable = vscode.commands.registerCommand('exportDefaultVariable', exportDefaultVariable);
+
 
 export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(disposableHoverProvider1, disposableHoverProvider2, disposableCodeActionsProvider1, disposableCodeActionsProvider2, disposableExportVariable, disposableExportDefaultVariable);
