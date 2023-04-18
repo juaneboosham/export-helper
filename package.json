@@ -26,7 +26,7 @@
         "command": "export-helper.helloWorld",
         "title": "Hello World"
       }
-    ],
+    ]
   },
   "license": "MIT",
   "scripts": {
