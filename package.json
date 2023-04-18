@@ -2,6 +2,7 @@
   "name": "export-helper",
   "displayName": "export-helper",
   "description": "",
+  "icon": "images/logo.png",
   "version": "0.3.0",
   "publisher": "meahab",
   "engines": {
@@ -22,7 +23,6 @@
         "title": "Hello World"
       }
     ],
-    "icon": "images/logo.png"
   },
   "license": "MIT",
   "scripts": {
