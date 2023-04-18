@@ -7,7 +7,7 @@
     "type": "git",
     "url": "https://github.com/juaneboosham/export-helper.git"
   },
-  "version": "0.6.0",
+  "version": "0.6.1",
   "publisher": "meahab",
   "engines": {
     "vscode": "^1.77.0"
