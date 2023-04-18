@@ -59,13 +59,29 @@ function exportVariable(variableName: string) {
 		vscode.window.showErrorMessage('No active text editor found');
 		return;
 	}
-	const edit = new vscode.WorkspaceEdit();
-	const lastLine = editor.document.lineAt(editor.document.lineCount - 1);
-	if (variableName) {
+
+	const document = editor.document;
+	const lastLine = document.lineAt(document.lineCount - 1);
+
+	// 检查文档末尾是否已经存在 export 语句
+	const exportRegExp = /export\s*\{\s*([^{}]*?)\s*\}\s*;?\s*$/;
+	const exportMatch = lastLine.text.match(exportRegExp);
+	if (exportMatch) {
+		// 如果已经存在 export {}，将变量加入到括号中
+		const variables = exportMatch[1].split(',').map(v => v.trim());
+		if (!variables.includes(variableName)) {
+			variables.push(variableName);
+		}
+		const exportLine = `export { ${variables.join(', ')} };`;
+		const edit = new vscode.WorkspaceEdit();
+		edit.replace(document.uri, lastLine.range, exportLine);
+		vscode.workspace.applyEdit(edit).then(() => { });
+	} else {
+		// 如果不存在 export {}，在文档末尾添加 export 语句
 		const exportLine = `\nexport { ${variableName} };`;
-		edit.insert(editor.document.uri, new vscode.Position(lastLine.range.end.line, lastLine.range.end.character), exportLine);
-		vscode.workspace.applyEdit(edit).then(() => {
-		});
+		const edit = new vscode.WorkspaceEdit();
+		edit.insert(document.uri, new vscode.Position(document.lineCount - 1, lastLine.range.end.character), exportLine);
+		vscode.workspace.applyEdit(edit).then(() => { });
 	}
 }
 
@@ -81,6 +97,7 @@ function exportDefaultVariable(variableName: string) {
 		const exportLine = `\nexport default ${variableName};`;
 		edit.insert(editor.document.uri, new vscode.Position(lastLine.range.end.line, lastLine.range.end.character), exportLine);
 		vscode.workspace.applyEdit(edit).then(() => {
+			vscode.commands.executeCommand('editor.action.escapeFocusHover');
 		});
 	}
 };
@@ -133,4 +150,3 @@ function getVariableName(text: string): string | null {
 	// If no match is found, return null
 	return null;
 }
-
