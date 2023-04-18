@@ -21,7 +21,10 @@
         "command": "export-helper.helloWorld",
         "title": "Hello World"
       }
-    ]
+    ],
+    "icon": {
+      "path": "./logo.png"
+    }
   },
   "license": "MIT",
   "scripts": {
