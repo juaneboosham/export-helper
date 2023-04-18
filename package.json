@@ -22,9 +22,7 @@
         "title": "Hello World"
       }
     ],
-    "icon": {
-      "path": "./logo.png"
-    }
+    "icon": "images/logo.png"
   },
   "license": "MIT",
   "scripts": {
