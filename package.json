@@ -1,7 +1,7 @@
 {
   "name": "export-helper",
   "displayName": "export-helper",
-  "description": "",
+  "description": "This extension provides a variety of features to help you export your files in a snap. ",
   "icon": "images/logo.png",
   "repository": {
     "type": "git",
