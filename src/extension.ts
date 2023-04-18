@@ -54,36 +54,41 @@ const disposableCodeActionsProvider1 = vscode.languages.registerCodeActionsProvi
 const disposableCodeActionsProvider2 = vscode.languages.registerCodeActionsProvider({ language: 'typescript', scheme: 'file' }, exportActionProvider);
 
 function exportVariable(variableName: string) {
+	// Get the active text editor
 	const editor = vscode.window.activeTextEditor;
 	if (!editor) {
 		vscode.window.showErrorMessage('No active text editor found');
 		return;
 	}
 
+	// Get the document and check if the variable has already been exported
 	const document = editor.document;
-	const lastLine = document.lineAt(document.lineCount - 1);
-
-	// 检查文档末尾是否已经存在 export 语句
-	const exportRegExp = /export\s*\{\s*([^{}]*?)\s*\}\s*;?\s*$/;
-	const exportMatch = lastLine.text.match(exportRegExp);
-	if (exportMatch) {
-		// 如果已经存在 export {}，将变量加入到括号中
-		const variables = exportMatch[1].split(',').map(v => v.trim());
-		if (!variables.includes(variableName)) {
-			variables.push(variableName);
+	let exportRange: vscode.Range | null = null;
+	for (let i = 0; i < document.lineCount; i++) {
+		const line = document.lineAt(i);
+		const exportRegExp = /export\s*\{\s*([^{}]*?)\s*\}\s*;?\s*$/;
+		const exportMatch = line.text.match(exportRegExp);
+		if (exportMatch) {
+			const variables = exportMatch[1].split(',').map(v => v.trim());
+			if (!variables.includes(variableName)) {
+				variables.push(variableName);
+				const exportLine = `export { ${variables.join(', ')} };`;
+				const edit = new vscode.WorkspaceEdit();
+				edit.replace(document.uri, line.range, exportLine);
+				vscode.workspace.applyEdit(edit).then(() => { });
+			}
+			return;
 		}
-		const exportLine = `export { ${variables.join(', ')} };`;
-		const edit = new vscode.WorkspaceEdit();
-		edit.replace(document.uri, lastLine.range, exportLine);
-		vscode.workspace.applyEdit(edit).then(() => { });
-	} else {
-		// 如果不存在 export {}，在文档末尾添加 export 语句
-		const exportLine = `\nexport { ${variableName} };`;
-		const edit = new vscode.WorkspaceEdit();
-		edit.insert(document.uri, new vscode.Position(document.lineCount - 1, lastLine.range.end.character), exportLine);
-		vscode.workspace.applyEdit(edit).then(() => { });
 	}
+
+	// If the variable has not been exported, add a new export statement at the end of the document
+	const lastLine = document.lineAt(document.lineCount - 1);
+	const exportLine = `\nexport { ${variableName} };`;
+	const edit = new vscode.WorkspaceEdit();
+	edit.insert(document.uri, new vscode.Position(document.lineCount - 1, lastLine.range.end.character), exportLine);
+	vscode.workspace.applyEdit(edit).then(() => { });
 }
+
 
 function exportDefaultVariable(variableName: string) {
 	const editor = vscode.window.activeTextEditor;
