@@ -3,6 +3,10 @@
   "displayName": "export-helper",
   "description": "",
   "icon": "images/logo.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/juaneboosham/export-helper.git"
+  },
   "version": "0.3.0",
   "publisher": "meahab",
   "engines": {
